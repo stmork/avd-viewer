@@ -1,0 +1,21 @@
+name: Build JPG converter for the Amiga Video Digitizer
+on: [push]
+
+jobs:
+  AVD-Viewer-Ubuntu:
+    permissions:
+      contents: read
+      packages: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Update package info
+        run: sudo apt update -y
+      - name: Install needed components
+        run: sudo apt install -y cppcheck libjpeg-dev
+      - name: CMake
+        run: cmake -B build
+      - name: Build
+        run: make -C build
+      - name: CPP-Check
+        run: make -C build cppcheck
