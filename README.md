@@ -1,4 +1,6 @@
 # AVD-Viewer
+![DigitizedWB](Frame_MVD819.jpg)
+
 The AVD-Viewer is no usual image viewer but converts the raw data files from the [AVD project](https://github.com/stmork/avd) into a viewable JPEG.
 ```
 cmake -B build
