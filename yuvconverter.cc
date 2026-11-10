@@ -45,24 +45,24 @@ void YuvConverter::prepare(const std::uint8_t * yPtr, const std::uint8_t * uvPtr
 			const std::uint8_t u = uvPtr[cIndex++] + 0x80;
 			const std::uint8_t v = uvPtr[cIndex++] + 0x80;
 
-			planar.push_back(yPtr[yIndex++] << 1);
+			planar.push_back(yPtr[yIndex++]);
 			planar.push_back(u);
 			planar.push_back(v);
-			planar.push_back(yPtr[yIndex++] << 1);
+			planar.push_back(yPtr[yIndex++]);
 			planar.push_back(u);
 			planar.push_back(v);
 
-			planar.push_back(yPtr[yIndex++] << 1);
+			planar.push_back(yPtr[yIndex++]);
 			planar.push_back(u);
 			planar.push_back(v);
-			planar.push_back(yPtr[yIndex++] << 1);
+			planar.push_back(yPtr[yIndex++]);
 			planar.push_back(u);
 			planar.push_back(v);
 #else
-			planar.push_back(yPtr[yIndex++] << 1);
-			planar.push_back(yPtr[yIndex++] << 1);
-			planar.push_back(yPtr[yIndex++] << 1);
-			planar.push_back(yPtr[yIndex++] << 1);
+			planar.push_back(yPtr[yIndex++]);
+			planar.push_back(yPtr[yIndex++]);
+			planar.push_back(yPtr[yIndex++]);
+			planar.push_back(yPtr[yIndex++]);
 #endif
 		}
 	}
