@@ -18,18 +18,21 @@ inline void YuvReader::read(
 	const char      *      filename,
 	const unsigned         width)
 {
-	const std::size_t size  = fs::file_size(filename);
-	FILE       *      input = std::fopen(filename, "rb");
-
-	if (input != nullptr)
+	if (fs::exists(filename))
 	{
-		vector.clear();
-		vector.reserve(size);
-		vector.resize(width * YuvReader::ySize);
+		const std::size_t size  = fs::file_size(filename);
+		FILE       *      input = std::fopen(filename, "rb");
 
-		std::fread(vector.data(), width, ySize, input);
+		if (input != nullptr)
+		{
+			vector.clear();
+			vector.reserve(size);
+			vector.resize(width * YuvReader::ySize);
 
-		printf("size:  %zu/%zu %s\n", vector.size(), size, filename);
-		std::fclose(input);
+			std::fread(vector.data(), width, ySize, input);
+
+			printf("size:  %zu/%zu %s\n", vector.size(), size, filename);
+			std::fclose(input);
+		}
 	}
 }

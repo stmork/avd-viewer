@@ -22,7 +22,7 @@ class YuvConverter
 
 public:
 	YuvConverter() = delete;
-	explicit YuvConverter(FILE * output);
+	explicit YuvConverter(FILE * output, const bool color = true);
 
 	~YuvConverter()
 	{

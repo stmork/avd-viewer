@@ -1,7 +1,7 @@
 #include "yuvconverter.h"
 #include "yuvreader.h"
 
-YuvConverter::YuvConverter(FILE * output)
+YuvConverter::YuvConverter(FILE * output, const bool color)
 {
 	cinfo.err = jpeg_std_error(&jerr);
 	jerr.error_exit = error;
@@ -11,22 +11,26 @@ YuvConverter::YuvConverter(FILE * output)
 
 	cinfo.image_width      = YuvReader::xSize;
 	cinfo.image_height     = YuvReader::ySize & 0xfff0;
-#ifdef JPG_COLOR
-	cinfo.input_components = 3;
-	cinfo.in_color_space   = JCS_YCbCr;
-#else
-	cinfo.input_components = 1;
-	cinfo.in_color_space   = JCS_GRAYSCALE;
-#endif
+
+	if (color)
+	{
+		cinfo.input_components = 3;
+		cinfo.in_color_space   = JCS_YCbCr;
+	}
+	else
+	{
+		cinfo.input_components = 1;
+		cinfo.in_color_space   = JCS_GRAYSCALE;
+	}
 
 	jpeg_set_defaults(&cinfo);
 	jpeg_set_quality(&cinfo, 90, TRUE);
 }
 
-void YuvConverter::prepare(const std::uint8_t * yPtr, const std::uint8_t * uvPtr)
+void YuvConverter::prepare(
+	const std::uint8_t * yPtr,
+	const std::uint8_t * uvPtr)
 {
-	(void)uvPtr;
-
 	planar.clear();
 	planar.reserve(YuvReader::xSize * YuvReader::ySize * cinfo.input_components);
 
@@ -35,35 +39,40 @@ void YuvConverter::prepare(const std::uint8_t * yPtr, const std::uint8_t * uvPtr
 	for (unsigned y = 0; y < YuvReader::ySize; y++)
 	{
 		unsigned yIndex = ((y / 2 + offset[y & 1]) * YuvReader::xSize);
-#ifdef JPG_COLOR
-		unsigned cIndex = yIndex >> 1;
-#endif
 
-		for (unsigned x = 0; x < YuvReader::xSize; x += 4)
+		if (cinfo.in_color_space == JCS_YCbCr)
 		{
-#ifdef JPG_COLOR
-			const std::uint8_t u = uvPtr[cIndex++] + 0x80;
-			const std::uint8_t v = uvPtr[cIndex++] + 0x80;
+			unsigned cIndex = yIndex >> 1;
 
-			planar.push_back(yPtr[yIndex++]);
-			planar.push_back(u);
-			planar.push_back(v);
-			planar.push_back(yPtr[yIndex++]);
-			planar.push_back(u);
-			planar.push_back(v);
+			for (unsigned x = 0; x < YuvReader::xSize; x += 4)
+			{
+				const std::uint8_t u = uvPtr[cIndex++] + 0x80;
+				const std::uint8_t v = uvPtr[cIndex++] + 0x80;
 
-			planar.push_back(yPtr[yIndex++]);
-			planar.push_back(u);
-			planar.push_back(v);
-			planar.push_back(yPtr[yIndex++]);
-			planar.push_back(u);
-			planar.push_back(v);
-#else
-			planar.push_back(yPtr[yIndex++]);
-			planar.push_back(yPtr[yIndex++]);
-			planar.push_back(yPtr[yIndex++]);
-			planar.push_back(yPtr[yIndex++]);
-#endif
+				planar.push_back(yPtr[yIndex++]);
+				planar.push_back(u);
+				planar.push_back(v);
+				planar.push_back(yPtr[yIndex++]);
+				planar.push_back(u);
+				planar.push_back(v);
+
+				planar.push_back(yPtr[yIndex++]);
+				planar.push_back(u);
+				planar.push_back(v);
+				planar.push_back(yPtr[yIndex++]);
+				planar.push_back(u);
+				planar.push_back(v);
+			}
+		}
+		else
+		{
+			for (unsigned x = 0; x < YuvReader::xSize; x += 4)
+			{
+				planar.push_back(yPtr[yIndex++]);
+				planar.push_back(yPtr[yIndex++]);
+				planar.push_back(yPtr[yIndex++]);
+				planar.push_back(yPtr[yIndex++]);
+			}
 		}
 	}
 }

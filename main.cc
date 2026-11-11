@@ -16,7 +16,7 @@ int main(int argc, char * argv[])
 
 	if (file)
 	{
-		YuvConverter converter(file);
+		YuvConverter converter(file, reader.uvData().size() > 0);
 
 		converter.prepare(reader.yData().data(), reader.uvData().data());
 		converter.save();

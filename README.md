@@ -14,3 +14,7 @@ share the same U and V data. Note that the SAA 9051 produces only 7 data
 bits per Y value, so the value is already multiplied by two to enhance
 brightness. The U and V values have color ranges from negative to positive
 whereas the JPEG lib uses a bias of 128 so this software adds this bias.
+
+# SyncSVG
+The SyncSVG tool converts raw v and h sync data into a SVG image for
+examination. You can view the SVG using any web browser.
