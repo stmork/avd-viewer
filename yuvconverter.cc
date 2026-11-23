@@ -38,7 +38,13 @@ void YuvConverter::prepare(
 
 	for (unsigned y = 0; y < YuvReader::ySize; y++)
 	{
+#if 1
+		// Interleaved
 		unsigned yIndex = ((y / 2 + offset[y & 1]) * YuvReader::xSize);
+#else
+		// Non interleaved
+		unsigned yIndex = y * YuvReader::xSize;
+#endif
 
 		if (cinfo.in_color_space == JCS_YCbCr)
 		{
