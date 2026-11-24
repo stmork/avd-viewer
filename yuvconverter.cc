@@ -34,7 +34,7 @@ void YuvConverter::prepare(
 	planar.clear();
 	planar.reserve(YuvReader::xSize * YuvReader::ySize * cinfo.input_components);
 
-	constexpr unsigned offset[2] { 0, (YuvReader::ySize + 1) >> 1};
+	static constexpr unsigned offset[2] { 0, (YuvReader::ySize + 1) >> 1};
 
 	for (unsigned y = 0; y < YuvReader::ySize; y++)
 	{
